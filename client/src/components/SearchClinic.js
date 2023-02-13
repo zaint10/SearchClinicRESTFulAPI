@@ -18,10 +18,10 @@ const SearchClinic = () => {
       try {
         const response = await axios.get("/api", {
           params: {
-            name: clinicName,
-            state: clinicState,
-            from: availabilityFrom,
-            to: availabilityTo,
+            clinicName: clinicName,
+            clinicState: clinicState,
+            availabilityFrom: availabilityFrom,
+            availabilityTo: availabilityTo,
           },
         });
 
@@ -111,8 +111,8 @@ const SearchClinic = () => {
         <tbody>
           {clinics.map((result) => (
             <tr key={result.id}>
-              <td>{result.name}</td>
-              <td>{result.stateName}</td>
+              <td>{result.clinicName}</td>
+              <td>{result.clinicState}</td>
               <td>{result.availabilityFrom}</td>
               <td>{result.availabilityTo}</td>
             </tr>
