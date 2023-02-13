@@ -11,7 +11,16 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/api", async (req, res) => {
-  res.send({ clinics: [{ name: "dummy clinic" }] });
+  res.json({
+    clinics: [
+      {
+        name: "dummy clinic",
+        stateName: "Alaska",
+        availabilityFrom: "10:00",
+        availabilityTo: "19:30",
+      },
+    ],
+  });
 });
 
 const PORT = process.env.PORT || 5000;

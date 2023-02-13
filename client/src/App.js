@@ -1,5 +1,5 @@
 import React from "react";
-import SearchClinic from "./components/SearchClinics";
+import SearchClinic from "./components/SearchClinic";
 
 function App() {
   return (
