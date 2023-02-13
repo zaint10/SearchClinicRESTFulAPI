@@ -23,7 +23,7 @@ My Analysis is as follows,
     - Insufficient logging:
 
 - **Memory efficiency How will it behave in case of large datasets?** Yes, it is desinged to handle large datasets
-- **Testing How well tested your application is?** Can you give some metrics?
+- **Testing How well tested your application is?** Yes, it contains the tests.
 - **Documentation Is the code self documented**  Yes, it is documented.
 
 # Node API - Dental & Vet Clinic Information
