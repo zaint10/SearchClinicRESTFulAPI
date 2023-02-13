@@ -6,48 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", async (req, res) => {
-  res.json({ hey: "World!" });
-});
-
-const DENTAL_CLINICS_URL =
-  "https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json";
-const VET_CLINICS_URL =
-  "https://storage.googleapis.com/scratchpay-code-challenge/vet-clinics.json";
-const PAGE_SIZE = 10
-
-// Helper function to normalize dental clinic data
-const normalizeDentalData = (clinic) => {
-  /*
-   * This function takes a dental clinic data object as an argument and returns
-   * a new object with four properties: clinicName, clinicState, availabilityFrom,
-   * and availabilityTo. The returned object is a normalized representation of the
-   * original dental clinic data, which means it contains only the relevant
-   * information in a standardized format.
-   */
-  return {
-    clinicName: clinic.name,
-    clinicState: clinic.stateName,
-    availabilityFrom: clinic.availability.from,
-    availabilityTo: clinic.availability.to,
-  };
-};
-
-// Helper function to normalize vet clinic data
-const normalizeVetData = (clinic) => {
-  /*
-   * This function takes a vet clinic data object as an argument and returns a new object
-   * with the same four properties as normalizeDentalData. The returned object is
-   * a normalized representation of the original vet clinic data, which means it contains
-   * only the relevant information in a standardized format.
-   */
-  return {
-    clinicName: clinic.clinicName,
-    clinicState: clinic.stateCode,
-    availabilityFrom: clinic.opening.from,
-    availabilityTo: clinic.opening.to,
-  };
-};
+const { DENTAL_CLINICS_URL, VET_CLINICS_URL, PAGE_SIZE } = require("./constants");
+const helper = require("./helpers/helpers");
 
 // Helper function to get all clinics from both providers and normalize the data
 const getAllClinics = async () => {
@@ -63,14 +23,14 @@ const getAllClinics = async () => {
 
   try {
     const dentalResponse = await axios.get(DENTAL_CLINICS_URL);
-    dentalClinics = dentalResponse.data.map(normalizeDentalData);
+    dentalClinics = dentalResponse.data.map(helper.normalizeDentalData);
   } catch (error) {
     console.error(error);
   }
 
   try {
     const vetResponse = await axios.get(VET_CLINICS_URL);
-    vetClinics = vetResponse.data.map(normalizeVetData);
+    vetClinics = vetResponse.data.map(helper.normalizeVetData);
   } catch (error) {
     console.error(error);
   }
