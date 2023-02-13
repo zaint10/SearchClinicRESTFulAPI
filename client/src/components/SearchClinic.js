@@ -3,13 +3,16 @@ import axios from "axios";
 
 const SearchClinic = () => {
   // State variables to store the list of clinics, error message, loading status, and search parameters
-  const [clinics, setClinics] = useState([]);
+  const [data, setData] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [clinicName, setClinicName] = useState("");
   const [clinicState, setClinicState] = useState("");
   const [availabilityFrom, setAvailabilityFrom] = useState("");
   const [availabilityTo, setAvailabilityTo] = useState("");
+
+  // State variable to store current page
+  const [page, setPage] = useState(1);
 
   // useEffect hook to fetch clinics data based on the search parameters
   useEffect(() => {
@@ -26,11 +29,12 @@ const SearchClinic = () => {
             clinicState: clinicState,
             availabilityFrom: availabilityFrom,
             availabilityTo: availabilityTo,
+            page,
           },
         });
 
         // set the clinics data to the state
-        setClinics(response.data.clinics);
+        setData(response.data);
       } catch (err) {
         // if there's an error, set the error message to the state
         setError(err.message);
@@ -44,7 +48,7 @@ const SearchClinic = () => {
     if (clinicName || clinicState || availabilityFrom || availabilityTo) {
       fetchClinics();
     }
-  }, [clinicName, clinicState, availabilityFrom, availabilityTo]);
+  }, [clinicName, clinicState, availabilityFrom, availabilityTo, page]);
 
   // function to handle the "Enter" key press on the clinic name input
   const handleClinicNameKeyDown = (event) => {
@@ -65,6 +69,14 @@ const SearchClinic = () => {
   const handleAvailabilityToChange = (event) => {
     setAvailabilityTo(event.target.value);
   };
+
+  // function to handle changes to change page
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  // Destructure the clinics array from the object
+  const { clinics } = data;
 
   return (
     <div>
@@ -124,7 +136,7 @@ const SearchClinic = () => {
           </tr>
         </thead>
         <tbody>
-          {clinics.map((result) => (
+          {clinics && clinics.map((result) => (
             <tr key={result.id}>
               <td>{result.clinicName}</td>
               <td>{result.clinicState}</td>
@@ -134,6 +146,21 @@ const SearchClinic = () => {
           ))}
         </tbody>
       </table>
+      <div>
+        <button
+          disabled={page === 1}
+          onClick={() => handlePageChange(page - 1)}
+        >
+          Prev
+        </button>
+        {page}
+        <button
+          disabled={clinics ? clinics.length < data.pageSize : true}
+          onClick={() => handlePageChange(page + 1)}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
