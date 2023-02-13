@@ -14,16 +14,17 @@ const DENTAL_CLINICS_URL =
   "https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json";
 const VET_CLINICS_URL =
   "https://storage.googleapis.com/scratchpay-code-challenge/vet-clinics.json";
+const PAGE_SIZE = 10
 
 // Helper function to normalize dental clinic data
 const normalizeDentalData = (clinic) => {
   /*
-  * This function takes a dental clinic data object as an argument and returns 
-  * a new object with four properties: clinicName, clinicState, availabilityFrom, 
-  * and availabilityTo. The returned object is a normalized representation of the 
-  * original dental clinic data, which means it contains only the relevant 
-  * information in a standardized format.
-  */
+   * This function takes a dental clinic data object as an argument and returns
+   * a new object with four properties: clinicName, clinicState, availabilityFrom,
+   * and availabilityTo. The returned object is a normalized representation of the
+   * original dental clinic data, which means it contains only the relevant
+   * information in a standardized format.
+   */
   return {
     clinicName: clinic.name,
     clinicState: clinic.stateName,
@@ -35,11 +36,11 @@ const normalizeDentalData = (clinic) => {
 // Helper function to normalize vet clinic data
 const normalizeVetData = (clinic) => {
   /*
-  * This function takes a vet clinic data object as an argument and returns a new object 
-  * with the same four properties as normalizeDentalData. The returned object is 
-  * a normalized representation of the original vet clinic data, which means it contains 
-  * only the relevant information in a standardized format.
-  */
+   * This function takes a vet clinic data object as an argument and returns a new object
+   * with the same four properties as normalizeDentalData. The returned object is
+   * a normalized representation of the original vet clinic data, which means it contains
+   * only the relevant information in a standardized format.
+   */
   return {
     clinicName: clinic.clinicName,
     clinicState: clinic.stateCode,
@@ -51,10 +52,10 @@ const normalizeVetData = (clinic) => {
 // Helper function to get all clinics from both providers and normalize the data
 const getAllClinics = async () => {
   /**
-   * This function is an asynchronous function that returns an array of all clinics from both 
-   * dental and vet providers. It does this by making two separate API calls, one to the dental 
-   * clinic provider and the other to the vet clinic provider, and normalizing the returned 
-   * data using the normalizeDentalData and normalizeVetData functions. The two API 
+   * This function is an asynchronous function that returns an array of all clinics from both
+   * dental and vet providers. It does this by making two separate API calls, one to the dental
+   * clinic provider and the other to the vet clinic provider, and normalizing the returned
+   * data using the normalizeDentalData and normalizeVetData functions. The two API
    * calls are wrapped in try-catch blocks to handle any errors that may occur during the calls
    */
   let dentalClinics = [];
@@ -80,6 +81,7 @@ const getAllClinics = async () => {
 app.get("/api", async (req, res) => {
   const { clinicName, clinicState, availabilityFrom, availabilityTo } =
     req.query;
+  const page = parseInt(req.query.page) || 1;
 
   let clinics = await getAllClinics();
 
@@ -147,8 +149,16 @@ app.get("/api", async (req, res) => {
     });
   }
 
-  // Return all clinics
-  res.json({ clinics });
+  const startIndex = (page - 1) * PAGE_SIZE;
+  const endIndex = page * PAGE_SIZE;
+  const paginatedClinics = clinics.slice(startIndex, endIndex);
+  // Return the paginated response of clinics data
+  res.send({
+    clinics: paginatedClinics,
+    totalClinics: clinics.length,
+    currentPage: page,
+    pageSize: PAGE_SIZE,
+  });
 });
 
 const PORT = process.env.PORT || 5000;
