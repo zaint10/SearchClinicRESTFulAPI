@@ -10,7 +10,7 @@ app.get("/", async (req, res) => {
   res.json({ hey: "World!" });
 });
 
-app.get("/clinics", async (req, res) => {
+app.get("/api", async (req, res) => {
   res.send({ clinics: [{ name: "dummy clinic" }] });
 });
 

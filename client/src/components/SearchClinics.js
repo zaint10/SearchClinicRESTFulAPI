@@ -12,7 +12,7 @@ const SearchClinic = () => {
       setError(null);
 
       try {
-        const response = await axios.get("/clinics", {
+        const response = await axios.get("/api", {
           params: {},
         });
 
