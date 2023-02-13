@@ -6,7 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const { DENTAL_CLINICS_URL, VET_CLINICS_URL, PAGE_SIZE } = require("./constants");
+const {
+  DENTAL_CLINICS_URL,
+  VET_CLINICS_URL,
+  PAGE_SIZE,
+} = require("./constants");
 const helper = require("./helpers/helpers");
 
 // Helper function to get all clinics from both providers and normalize the data
