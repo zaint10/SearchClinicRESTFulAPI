@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const SearchClinic = () => {
+  // State variables to store the list of clinics, error message, loading status, and search parameters
   const [clinics, setClinics] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -10,12 +11,15 @@ const SearchClinic = () => {
   const [availabilityFrom, setAvailabilityFrom] = useState("");
   const [availabilityTo, setAvailabilityTo] = useState("");
 
+  // useEffect hook to fetch clinics data based on the search parameters
   useEffect(() => {
     const fetchClinics = async () => {
+      // set loading status to true and clear any previous error message
       setLoading(true);
       setError(null);
 
       try {
+        // send a GET request to the API with the search parameters as query string
         const response = await axios.get("/api", {
           params: {
             clinicName: clinicName,
@@ -25,31 +29,39 @@ const SearchClinic = () => {
           },
         });
 
+        // set the clinics data to the state
         setClinics(response.data.clinics);
       } catch (err) {
+        // if there's an error, set the error message to the state
         setError(err.message);
       } finally {
+        // set loading status to false
         setLoading(false);
       }
     };
 
+    // only fetch the clinics data if at least one search parameter is provided
     if (clinicName || clinicState || availabilityFrom || availabilityTo) {
       fetchClinics();
     }
   }, [clinicName, clinicState, availabilityFrom, availabilityTo]);
 
+  // function to handle the "Enter" key press on the clinic name input
   const handleClinicNameKeyDown = (event) => {
     if (event.key == "Enter") setClinicName(event.target.value);
   };
 
+  // function to handle the "Enter" key press on the clinic state input
   const handleClinicStateKeyDown = (event) => {
     if (event.key == "Enter") setClinicState(event.target.value);
   };
 
+  // function to handle changes to the availability from input
   const handleAvailabilityFromChange = (event) => {
     setAvailabilityFrom(event.target.value);
   };
 
+  // function to handle changes to the availability to input
   const handleAvailabilityToChange = (event) => {
     setAvailabilityTo(event.target.value);
   };
@@ -58,6 +70,7 @@ const SearchClinic = () => {
     <div>
       <form>
         <div>
+          {/* Form to input the clinic name, state, availability from and availability to */}
           <label htmlFor="clinicName">Clinic Name:</label>
           <input
             type="text"
@@ -96,9 +109,11 @@ const SearchClinic = () => {
         </div>
       </form>
 
+      {/* Showing loader or any error while calling the API */}
       {loading && <div>Loading...</div>}
       {error && <div>{error}</div>}
 
+      {/* Table for showing all the clinics */}
       <table>
         <thead>
           <tr>
